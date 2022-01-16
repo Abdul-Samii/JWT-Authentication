@@ -22,7 +22,7 @@ const users = [
 
 const generateAccessToken = (user) =>{
     return jwt.sign({id:user.id,isAdmin:user.isAdmin},"accesstoken",{
-        expiresIn:"15s",
+        expiresIn:"5m",
     });
 }
 
@@ -93,6 +93,12 @@ app.post("/api/refresh",(req,res)=>{
     // //if OK, create new token
 })
 
+
+app.post("/api/logout",verify,(req,res)=>{
+    const refToken = req.body.token;
+    refreshTokens = refreshTokens.filter((token)=>token!==refToken);
+    res.status(200).json("Logout Successfully");
+})
 
 app.post("/api/delete",verify,(req,res)=>{
     res.status(200).json("OK");

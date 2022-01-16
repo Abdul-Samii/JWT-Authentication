@@ -33,6 +33,31 @@ app.post("/api/login",(req,res)=>{
         res.status(500).json("Invalid credentials");
     }
 })
+
+
+const verify = (req, res, next)=>{
+    const authHeader = req.headers.authorization;
+    if(authHeader){
+        const token = authHeader.split(" ")[1];
+        jwt.verify(token,"authToken",(err,user)=>{
+            if(err)
+            {
+                return res.status(403).json("Token is invalid");
+            }
+            req.user = user;
+            next();
+        });
+    }
+    else{
+        res.status(401).json("You are not authenticated");
+    }
+}
+
+
+app.post("/api/delete",verify,(req,res)=>{
+    res.status(200).json("OK");
+})
+
 app.listen(5000,()=>{
     console.log("Application started...");
 })
